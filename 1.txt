@@ -1,0 +1,254 @@
+1> Read an image using OpenCV and PIL. 
+
+import cv2  # Importing the OpenCV library for image processing
+from PIL import Image  # Importing the Image module from the PIL (Pillow) library for handling images
+import numpy as np  # Importing NumPy, which is often used for handling image arrays and numerical operations
+
+# Read an image using OpenCV
+img_cv = cv2.imread('image1.tif')  # Use OpenCV's imread function to read the image from the file 'image1.tif'
+# This returns the image as a NumPy array. If the image cannot be read, it will return None.
+
+cv2.imshow('OpenCV Image', img_cv)  # Display the image using OpenCV's imshow function in a window titled 'OpenCV Image'
+# The imshow function requires a window title and the image array to display.
+
+cv2.waitKey(0)  # Wait indefinitely for any key press to proceed
+# Without this line, the window may close immediately, so this ensures the image remains on screen until a key is pressed.
+
+cv2.destroyAllWindows()  # Close all OpenCV windows
+# This releases the resources used for displaying the window and ensures no window remains open after the key press.
+
+# Read an image using PIL (Python Imaging Library)
+img_pil = Image.open('image1.tif')  # Open the image using PIL's Image.open function
+# This returns an Image object that can be used for various image manipulations.
+
+img_pil.show()  # Display the image using the default image viewer of the operating system
+# The show method opens the image in an external viewer, unlike OpenCV, which opens its own window.
+
+
+2> Resize the image to different dimensions.
+
+def resize_image(img_cv, img_pil, width, height):
+    # Resize the OpenCV image using the cv2.resize function
+    # Parameters: the original image (img_cv) and the desired size (width, height)
+    resized_cv = cv2.resize(img_cv, (width, height))
+    
+    # Resize the PIL image using the resize method from PIL.Image
+    # Parameters: the original image (img_pil) and the desired size (width, height)
+    resized_pil = img_pil.resize((width, height))
+    
+    # Return the resized images for both OpenCV and PIL
+    return resized_cv, resized_pil
+
+# Set desired width and height for resizing
+width, height = 200, 200
+
+# Call the resize_image function with the OpenCV and PIL images and desired dimensions
+# This function returns the resized OpenCV image (resized_cv) and the resized PIL image (resized_pil)
+resized_cv, resized_pil = resize_image(img_cv, img_pil, width, height)
+
+# Display the resized OpenCV image in a window titled 'Resized Image - OpenCV'
+cv2.imshow('Resized Image - OpenCV', resized_cv)
+
+# Display the resized PIL image using the default image viewer of the operating system
+resized_pil.show()
+
+# Wait indefinitely for a key press to close the OpenCV window
+cv2.waitKey(0)
+
+# Close all OpenCV windows after a key is pressed
+cv2.destroyAllWindows()
+
+
+3> Crop a specific region from the image. 
+
+def crop_image(img_cv, img_pil, left, top, right, bottom):
+    # Crop the OpenCV image using array slicing
+    # Slicing format: img[y1:y2, x1:x2], where top-left is (left, top) and bottom-right is (right, bottom)
+    cropped_cv = img_cv[top:bottom, left:right]
+    
+    # Crop the PIL image using the crop() method
+    # The crop method takes a tuple (left, top, right, bottom), defining the box to be cropped
+    cropped_pil = img_pil.crop((left, top, right, bottom))
+    
+    # Return both the cropped OpenCV and PIL images
+    return cropped_cv, cropped_pil
+
+# Set coordinates for the top-left (left, top) and bottom-right (right, bottom) corners of the crop box
+left, top, right, bottom = 50, 50, 300, 300
+
+# Call the crop_image function with the OpenCV and PIL images and the cropping coordinates
+# The function returns the cropped images for both OpenCV and PIL
+cropped_cv, cropped_pil = crop_image(img_cv, img_pil, left, top, right, bottom)
+
+# Display the cropped OpenCV image in a window titled 'Cropped Image - OpenCV'
+cv2.imshow('Cropped Image - OpenCV', cropped_cv)
+
+# Display the cropped PIL image using the default image viewer of the operating system
+cropped_pil.show()
+
+# Wait indefinitely for a key press to close the OpenCV window
+cv2.waitKey(0)
+
+# Close all OpenCV windows after a key press
+cv2.destroyAllWindows()
+
+
+4> Rotate the image by a certain angle. 
+
+def rotate_image(img_cv, img_pil, angle):
+    # Get the height and width of the OpenCV image (img_cv)
+    (h, w) = img_cv.shape[:2]
+    
+    # Calculate the center of the image for rotation
+    center = (w / 2, h / 2)
+    
+    # Create a rotation matrix for the given angle using OpenCV's getRotationMatrix2D
+    # The last parameter '1.0' is the scaling factor (1.0 means no scaling)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    
+    # Rotate the image using OpenCV's warpAffine function, passing the image, 
+    # rotation matrix, and output size (width, height)
+    rotated_cv = cv2.warpAffine(img_cv, M, (w, h))
+    
+    # Rotate the PIL image (img_pil) using its built-in rotate method
+    rotated_pil = img_pil.rotate(angle)
+    
+    # Return both the rotated OpenCV image and rotated PIL image
+    return rotated_cv, rotated_pil
+
+# Define the angle of rotation
+angle = 45
+
+# Rotate both the OpenCV and PIL images by the specified angle
+rotated_cv, rotated_pil = rotate_image(img_cv, img_pil, angle)
+
+# Display the rotated OpenCV image in a window
+cv2.imshow('Rotated Image - OpenCV', rotated_cv)
+
+# Display the rotated PIL image using its show method (opens a window with the image)
+rotated_pil.show()
+
+# Wait for any key press to close the OpenCV window
+cv2.waitKey(0)
+
+# Close all OpenCV windows after the key press
+cv2.destroyAllWindows()
+
+
+5> Zoom into the image by a certain factor
+
+def zoom_image(img_cv, img_pil, zoom_factor):
+    # Get the height and width of the OpenCV image (img_cv)
+    (h, w) = img_cv.shape[:2]
+    
+    # Zoom the OpenCV image using the resize function. The 'fx' and 'fy' parameters
+    # specify the scale factor for width and height respectively (both set to zoom_factor)
+    zoomed_cv = cv2.resize(img_cv, None, fx=zoom_factor, fy=zoom_factor)
+    
+    # Zoom the PIL image by resizing it to the new dimensions
+    # Multiply the width and height by the zoom_factor and convert them to integers
+    zoomed_pil = img_pil.resize((int(w * zoom_factor), int(h * zoom_factor)))
+    
+    # Return both the zoomed OpenCV image and zoomed PIL image
+    return zoomed_cv, zoomed_pil
+
+# Define the zoom factor (1.5 means the image will be zoomed to 150% of the original size)
+zoom_factor = 1.5
+
+# Zoom both the OpenCV and PIL images by the specified zoom factor
+zoomed_cv, zoomed_pil = zoom_image(img_cv, img_pil, zoom_factor)
+
+# Display the zoomed OpenCV image in a window
+cv2.imshow('Zoomed Image - OpenCV', zoomed_cv)
+
+# Display the zoomed PIL image using its show method (opens a window with the image)
+zoomed_pil.show()
+
+# Wait for any key press to close the OpenCV window
+cv2.waitKey(0)
+
+# Close all OpenCV windows after the key press
+cv2.destroyAllWindows()
+
+6> Shrink the image by a certain factor:
+
+def shrink_image(img_cv, img_pil, shrink_factor):
+    # Get the height and width of the OpenCV image (img_cv)
+    (h, w) = img_cv.shape[:2]
+    
+    # Shrink the OpenCV image by resizing it using the specified shrink factor.
+    # The 'fx' and 'fy' parameters define the scale for the width and height respectively.
+    # Since we are shrinking, the shrink_factor will be less than 1 (e.g., 0.5 for 50% size).
+    shrunk_cv = cv2.resize(img_cv, None, fx=shrink_factor, fy=shrink_factor)
+    
+    # Shrink the PIL image by resizing it to the new dimensions.
+    # Multiply the original width and height by the shrink_factor and convert them to integers.
+    shrunk_pil = img_pil.resize((int(w * shrink_factor), int(h * shrink_factor)))
+    
+    # Return both the shrunk OpenCV image and the shrunk PIL image.
+    return shrunk_cv, shrunk_pil
+
+# Define the shrink factor (0.5 means the image will be shrunk to 50% of its original size).
+shrink_factor = 0.5
+
+# Shrink both the OpenCV and PIL images using the specified shrink factor.
+shrunk_cv, shrunk_pil = shrink_image(img_cv, img_pil, shrink_factor)
+
+# Display the shrunk OpenCV image in a window.
+cv2.imshow('Shrunk Image - OpenCV', shrunk_cv)
+
+# Display the shrunk PIL image using its built-in show method (opens a window with the image).
+shrunk_pil.show()
+
+# Wait for any key press to close the OpenCV window.
+cv2.waitKey(0)
+
+# Close all OpenCV windows after a key press.
+cv2.destroyAllWindows()
+
+
+
+ 7> Flip the image horizontally and vertically.
+
+def flip_image(img_cv, img_pil, flip_code):
+    # Flip the OpenCV image using cv2.flip() function
+    # flip_code: 0 = flip vertically, 1 = flip horizontally, -1 = flip both vertically and horizontally
+    flipped_cv = cv2.flip(img_cv, flip_code)
+    
+    # Check the flip_code to determine how to flip the PIL image
+    if flip_code == 0:
+        # If flip_code is 0, flip the PIL image vertically (top-to-bottom)
+        flipped_pil = img_pil.transpose(Image.FLIP_TOP_BOTTOM)
+    elif flip_code == 1:
+        # If flip_code is 1, flip the PIL image horizontally (left-to-right)
+        flipped_pil = img_pil.transpose(Image.FLIP_LEFT_RIGHT)
+    else:
+        # If flip_code is -1 or anything else, rotate the image 180 degrees (equivalent to flipping both horizontally and vertically)
+        flipped_pil = img_pil.transpose(Image.ROTATE_180)
+    
+    # Return both the flipped OpenCV and PIL images
+    return flipped_cv, flipped_pil
+
+# Flip the images horizontally by passing flip_code = 1 (horizontal flip)
+flipped_hor_cv, flipped_hor_pil = flip_image(img_cv, img_pil, 1)
+
+# Display the horizontally flipped OpenCV image in a window titled 'Flipped Horizontally - OpenCV'
+cv2.imshow('Flipped Horizontally - OpenCV', flipped_hor_cv)
+
+# Display the horizontally flipped PIL image using the default system image viewer
+flipped_hor_pil.show()
+
+# Flip the images vertically by passing flip_code = 0 (vertical flip)
+flipped_ver_cv, flipped_ver_pil = flip_image(img_cv, img_pil, 0)
+
+# Display the vertically flipped OpenCV image in a window titled 'Flipped Vertically - OpenCV'
+cv2.imshow('Flipped Vertically - OpenCV', flipped_ver_cv)
+
+# Display the vertically flipped PIL image using the default system image viewer
+flipped_ver_pil.show()
+
+# Wait indefinitely for a key press to keep both OpenCV windows open
+cv2.waitKey(0)
+
+# Close all OpenCV windows after a key press
+cv2.destroyAllWindows()

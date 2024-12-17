@@ -1,0 +1,70 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load a binary image (ensure the image is in binary format, or convert it)
+image = cv2.imread('images/image6-1.png', 0)  # 0 loads the image in grayscale
+
+# Create structuring elements
+kernel = np.ones((5,5), np.uint8)  # You can change the size and shape
+
+# 1. Apply Erosion to a Binary Image
+erosion = cv2.erode(image, kernel, iterations=1)
+
+# 2. Apply Dilation to a Binary Image
+dilation = cv2.dilate(image, kernel, iterations=1)
+
+# 3. Apply Opening Operation (Erosion followed by Dilation)
+opening = cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
+
+# 4. Apply Closing Operation (Dilation followed by Erosion)
+closing = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+
+# 5. Implement Morphological Gradient (Dilation minus Erosion)
+gradient = cv2.morphologyEx(image, cv2.MORPH_GRADIENT, kernel)
+
+# Plot all the transformations for comparison
+plt.figure(figsize=(10, 10))
+
+plt.subplot(2, 3, 1)
+plt.imshow(image, cmap='gray')
+plt.title('Original Image')
+plt.axis('off')
+
+plt.subplot(2, 3, 2)
+plt.imshow(erosion, cmap='gray')
+plt.title('Erosion')
+plt.axis('off')
+
+plt.subplot(2, 3, 3)
+plt.imshow(dilation, cmap='gray')
+plt.title('Dilation')
+plt.axis('off')
+
+plt.subplot(2, 3, 4)
+plt.imshow(opening, cmap='gray')
+plt.title('Opening')
+plt.axis('off')
+
+plt.subplot(2, 3, 5)
+plt.imshow(closing, cmap='gray')
+plt.title('Closing')
+plt.axis('off')
+
+plt.subplot(2, 3, 6)
+plt.imshow(gradient, cmap='gray')
+plt.title('Morphological Gradient')
+plt.axis('off')
+
+plt.show()
+
+# To compare effects of different structuring elements, you can modify the kernel and repeat the above operations.
+# Example: Try a different shape or size of the structuring element
+kernel_cross = cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+dilation_cross = cv2.dilate(image, kernel_cross, iterations=1)
+
+# Display result of dilation with different structuring element
+plt.imshow(dilation_cross, cmap='gray')
+plt.title('Dilation with Cross-shaped Kernel')
+plt.axis('off')
+plt.show()

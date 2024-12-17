@@ -1,0 +1,114 @@
+import cv2
+import matplotlib.pyplot as plt
+
+# Read the image (color image)
+image_path = 'images/image3.tif'
+img = cv2.imread(image_path)
+
+if img is None:
+    print("Error: Could not read the image.")
+else:
+    # Apply Averaging Smoothing Filter
+    avg_kernel = (5, 5)
+    img_avg = cv2.blur(img, avg_kernel)
+
+    # Display the original and smoothed images
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.title('Original Image')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(cv2.cvtColor(img_avg, cv2.COLOR_BGR2RGB))
+    plt.title('Averaging Smoothing')
+    plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+    # Show the images using OpenCV
+    cv2.imshow('Original Image', img)
+    cv2.imshow('Averaging Smoothing', img_avg)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+#(2)
+import cv2
+import matplotlib.pyplot as plt
+
+# Read the image (color image)
+image_path = 'images/image3-1.jpg'
+img = cv2.imread(image_path)
+
+if img is None:
+    print("Error: Could not read the image.")
+else:
+    # Apply Gaussian Smoothing Filter
+    gauss_kernel = (5, 5)
+    sigma = 1.0
+    img_gauss = cv2.GaussianBlur(img, gauss_kernel, sigma)
+
+    # Display the original and smoothed images
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.title('Original Image')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(cv2.cvtColor(img_gauss, cv2.COLOR_BGR2RGB))
+    plt.title('Gaussian Smoothing')
+    plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+    # Show the images using OpenCV
+    cv2.imshow('Original Image', img)
+    cv2.imshow('Gaussian Smoothing', img_gauss)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+#(3)
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Read the image (color image)
+image_path = 'images/image1.tif'
+img = cv2.imread(image_path)
+
+if img is None:
+    print("Error: Could not read the image.")
+else:
+    # Apply Sharpening Filter Using Kernels
+    kernel_sharpen = np.array([
+        [-1, -1, -1],
+        [-1,  9, -1],
+        [-1, -1, -1]
+    ])
+    img_sharpen = cv2.filter2D(img, -1, kernel_sharpen)
+
+    # Display the original and sharpened images
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    plt.title('Original Image')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(cv2.cvtColor(img_sharpen, cv2.COLOR_BGR2RGB))
+    plt.title('Sharpened Image')
+    plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+    # Show the images using OpenCV
+    cv2.imshow('Original Image', img)
+    cv2.imshow('Sharpened Image', img_sharpen)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+ 
+          
